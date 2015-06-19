@@ -7,7 +7,6 @@ using Microsoft.AspNet.Identity;
 using RavenDB.AspNet.Identity;
 using Xunit;
 using Xunit.Extensions;
-using Util = RavenDB.AspNet.Identity.Util;
 
 namespace RavenDB.AspNet.Identity.Tests
 {
@@ -26,7 +25,7 @@ namespace RavenDB.AspNet.Identity.Tests
 
             using (var docStore = NewDocStore())
             {
-                using (var session = docStore.OpenSession())
+                using (var session = docStore.OpenAsyncSession())
                 {
                     using (var mgr = new UserManager<SimpleAppUser>(new UserStore<SimpleAppUser>(session)))
                     {

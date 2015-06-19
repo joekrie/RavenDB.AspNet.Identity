@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDB.AspNet.Identity", "RavenDB.AspNet.Identity\RavenDB.AspNet.Identity.csproj", "{C147FA58-04F8-4139-9E6E-E3D72F3E30EC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DCA79957-4BB6-40F8-83A5-DAF316943D63}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -12,7 +10,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DCA799
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDB.AspNet.Identity.Tests", "RavenDB.AspNet.Identity.Tests\RavenDB.AspNet.Identity.Tests.csproj", "{6B02A46F-AEF3-4800-95EC-93BEE08254CF}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RavenDB.AspNet.Identity", "RavenDB.AspNet.Identity\RavenDB.AspNet.Identity.xproj", "{5B76B196-98AE-477C-9682-584FC531492F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RavenDB.AspNet.Identity.Tests", "RavenDB.AspNet.Identity.Tests\RavenDB.AspNet.Identity.Tests.xproj", "{C469F364-F134-4857-9137-6F762BA2E98F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDB.AspNet.Identity.Legacy", "RavenDB.AspNet.Identity.Legacy\RavenDB.AspNet.Identity.Legacy.csproj", "{C147FA58-04F8-4139-9E6E-E3D72F3E30EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDB.AspNet.Identity.Tests.Legacy", "RavenDB.AspNet.Identity.Tests.Legacy\RavenDB.AspNet.Identity.Tests.Legacy.csproj", "{6B02A46F-AEF3-4800-95EC-93BEE08254CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "legacy", "legacy", "{1D6C7515-7F01-436F-8B0D-A5CF05874466}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vnext", "vnext", "{52D99987-2087-4403-9107-9C11958FD1FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +28,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B76B196-98AE-477C-9682-584FC531492F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B76B196-98AE-477C-9682-584FC531492F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B76B196-98AE-477C-9682-584FC531492F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B76B196-98AE-477C-9682-584FC531492F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C469F364-F134-4857-9137-6F762BA2E98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C469F364-F134-4857-9137-6F762BA2E98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C469F364-F134-4857-9137-6F762BA2E98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C469F364-F134-4857-9137-6F762BA2E98F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C147FA58-04F8-4139-9E6E-E3D72F3E30EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C147FA58-04F8-4139-9E6E-E3D72F3E30EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C147FA58-04F8-4139-9E6E-E3D72F3E30EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -31,5 +47,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B76B196-98AE-477C-9682-584FC531492F} = {52D99987-2087-4403-9107-9C11958FD1FA}
+		{C469F364-F134-4857-9137-6F762BA2E98F} = {52D99987-2087-4403-9107-9C11958FD1FA}
+		{C147FA58-04F8-4139-9E6E-E3D72F3E30EC} = {1D6C7515-7F01-436F-8B0D-A5CF05874466}
+		{6B02A46F-AEF3-4800-95EC-93BEE08254CF} = {1D6C7515-7F01-436F-8B0D-A5CF05874466}
 	EndGlobalSection
 EndGlobal

@@ -92,9 +92,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RavenDB.AspNet.Identity\RavenDB.AspNet.Identity.csproj">
+    <ProjectReference Include="..\RavenDB.AspNet.Identity.Legacy\RavenDB.AspNet.Identity.Legacy.csproj">
       <Project>{c147fa58-04f8-4139-9e6e-e3d72f3e30ec}</Project>
-      <Name>RavenDB.AspNet.Identity</Name>
+      <Name>RavenDB.AspNet.Identity.Legacy</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

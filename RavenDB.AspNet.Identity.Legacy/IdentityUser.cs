@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 
 namespace RavenDB.AspNet.Identity
 {
-    public class IdentityUser
+    public class IdentityUser : IUser
     {
         public virtual string Id { get; set; }
         public virtual string UserName { get; set; }
@@ -36,6 +37,32 @@ namespace RavenDB.AspNet.Identity
         {
             this.Id = userId;
             this.UserName = userName;
+        }
+    }
+
+    public sealed class IdentityUserLogin
+    {
+        public string Id { get; set; }
+        public string UserId { get; set; }
+        public string Provider { get; set; }
+        public string ProviderKey { get; set; }
+    }
+
+    public class IdentityUserClaim
+    {
+        public virtual string ClaimType { get; set; }
+        public virtual string ClaimValue { get; set; }
+    }
+
+    public sealed class IdentityUserByUserName
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+
+        public IdentityUserByUserName(string userId, string userName)
+        {
+            UserId = userId;
+            UserName = userName;
         }
     }
 }
