@@ -33,12 +33,13 @@ namespace RavenDB.AspNet.Identity.Tests
 
         protected UserStore<TUser> NewUserStore<TUser>(IDocumentStore docStore) where TUser : IdentityUser
         {
-            return new UserStore<TUser>(docStore.OpenSession);
+            return new UserStore<TUser>(docStore.OpenAsyncSession);
         }
 
+        // todo: mock vNext UserManager (now has 10 dependencies)
         protected UserManager<TUser> NewUserManager<TUser>(IDocumentStore docStore) where TUser : IdentityUser
         {
-            return new UserManager<TUser>(new UserStore<TUser>(docStore.OpenSession));
+            return new UserManager<TUser>(new UserStore<TUser>(docStore.OpenAsyncSession));
         }
     }
 }

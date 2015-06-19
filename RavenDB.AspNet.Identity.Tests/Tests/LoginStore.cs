@@ -13,7 +13,7 @@ namespace RavenDB.AspNet.Identity.Tests
     public class LoginStore : BaseTest
     {
         [Fact]
-        public void Can_create_user_and_log_in()
+        public async void Can_create_user_and_log_in()
         {
             const string username = "DavidBoike";
             const string userId = "user_id_1";
@@ -29,18 +29,18 @@ namespace RavenDB.AspNet.Identity.Tests
                 {
                     using (var mgr = new UserManager<SimpleAppUser>(new UserStore<SimpleAppUser>(session)))
                     {
-                        IdentityResult result = mgr.Create(user, password);
+                        IdentityResult result = await mgr.CreateAsync(user, password);
 
                         Assert.True(result.Succeeded);
                         Assert.NotNull(user.Id);
 
-                        var res1 = mgr.AddLogin(user.Id, new UserLoginInfo("Google", googleLogin));
-                        var res2 = mgr.AddLogin(user.Id, new UserLoginInfo("Yahoo", yahooLogin));
+                        var res1 = await mgr.AddLoginAsync(user, new UserLoginInfo("Google", googleLogin, "GoogleDisplayName"));
+                        var res2 = await mgr.AddLoginAsync(user, new UserLoginInfo("Yahoo", yahooLogin, "YahooDisplayName"));
 
                         Assert.True(res1.Succeeded);
                         Assert.True(res2.Succeeded);
                     }
-                    session.SaveChanges();
+                    await session.SaveChangesAsync();
                 }
 
                 using (var session = docStore.OpenSession())
@@ -72,9 +72,9 @@ namespace RavenDB.AspNet.Identity.Tests
                 {
                     using (var mgr = new UserManager<SimpleAppUser>(new UserStore<SimpleAppUser>(session)))
                     {
-                        var userByName = mgr.Find(username, password);
-                        var userByGoogle = mgr.Find(new UserLoginInfo("Google", googleLogin));
-                        var userByYahoo = mgr.Find(new UserLoginInfo("Yahoo", yahooLogin));
+                        var userByName = await mgr.FindByNameAsync(username);
+                        var userByGoogle = await mgr.FindByLoginAsync("Google", googleLogin);
+                        var userByYahoo = await mgr.FindByLoginAsync("Yahoo", yahooLogin);
 
                         Assert.NotNull(userByName);
                         Assert.NotNull(userByGoogle);
