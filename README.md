@@ -9,4 +9,4 @@ This fork seeks to port RavenDB.AspNet.Identity to ASP.NET 5 (vNext). The Identi
 
 Most of the methods have been ported. A few new methods introduced to Identity in ASP.NET 5 are not yet implemented and throw a NotImplementException. 
 
-The tests do dot currently run. Many of the dependencies have changed in ASP.NET 5. For example, UserManager now has 10 dependencies, whereas in ASP.NET 4 it had one.
+The tests do not currently run. Many of the dependencies have changed in ASP.NET 5. For example, UserManager now has 10 dependencies, whereas in ASP.NET 4 it had one.
