@@ -1,4 +1,4 @@
-# RavenDB.AspNet.Identity #
+# RavenDB.AspNet.Identity-AspNet5 #
 An ASP.NET Identity provider for RavenDB
 
 ## Purpose ##
