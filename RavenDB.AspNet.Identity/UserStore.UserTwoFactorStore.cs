@@ -7,7 +7,7 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser> : IUserTwoFactorStore<TUser>
     {
-        public Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
+        public Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -20,7 +20,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken)
+        public Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 

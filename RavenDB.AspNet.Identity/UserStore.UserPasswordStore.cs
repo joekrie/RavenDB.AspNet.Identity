@@ -7,7 +7,7 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser> : IUserPasswordStore<TUser>
     {
-        public Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken)
+        public Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -20,7 +20,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<string> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken)
+        public Task<string> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -32,7 +32,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken)
+        public Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 

@@ -10,9 +10,10 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser>: IUserClaimStore<TUser>
     {
-        Task<IList<Claim>> IUserClaimStore<TUser>.GetClaimsAsync(TUser user, CancellationToken cancellationToken)
+        public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -23,9 +24,10 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(result);
         }
 
-        public Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        public Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -47,14 +49,17 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        Task IUserClaimStore<TUser>.ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        public Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
         {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
             throw new NotImplementedException();
         }
 
-        public Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        public Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -69,39 +74,52 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        Task<IList<TUser>> IUserClaimStore<TUser>.GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<string> IUserStore<TUser>.GetUserIdAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<string> IUserStore<TUser>.GetUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IUserStore<TUser>.SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<string> IUserStore<TUser>.GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IUserStore<TUser>.SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
+        public Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new NotImplementedException();
+        }
+
+        public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -113,18 +131,20 @@ namespace RavenDB.AspNet.Identity
                 throw new InvalidOperationException("user.Id property must be specified before calling CreateAsync");
             }
 
-            await _session.StoreAsync(user, cancellationToken);
+            await _session.StoreAsync(user, cancellationToken = default(CancellationToken));
 
             // This model allows us to lookup a user by name in order to get the id
             var userByName = new IdentityUserByUserName(user.Id, user.UserName);
-            await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken);
+            await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken = default(CancellationToken));
 
+            await SaveChanges(cancellationToken = default(CancellationToken));
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -134,9 +154,10 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (user == null)
             {
@@ -144,7 +165,7 @@ namespace RavenDB.AspNet.Identity
             }
 
             var userByName = await _session.LoadAsync<IdentityUserByUserName>(Util.GetIdentityUserByUserNameId(user.UserName), 
-                cancellationToken);
+                cancellationToken = default(CancellationToken));
 
             if (userByName != null)
             {
@@ -156,23 +177,29 @@ namespace RavenDB.AspNet.Identity
             return IdentityResult.Success;
         }
 
-        public async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var user = await _session.LoadAsync<TUser>(userId, cancellationToken);
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _session.LoadAsync<TUser>(userId, cancellationToken = default(CancellationToken));
             return user;
         }
 
-        public async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
         {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
             var userByName = await _session.LoadAsync<IdentityUserByUserName>(
-                Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken);
+                Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken = default(CancellationToken));
 
             if (userByName == null)
             {
                 return default(TUser);
             }
 
-            return await FindByIdAsync(userByName.UserId, cancellationToken);
+            return await FindByIdAsync(userByName.UserId, cancellationToken = default(CancellationToken));
         }
     }
 }

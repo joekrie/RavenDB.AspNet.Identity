@@ -7,7 +7,7 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser> : IUserLockoutStore<TUser>
     {
-        public Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken)
+        public Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -20,7 +20,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult((DateTimeOffset?) user.LockoutEndDate);
         }
 
-        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
+        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -35,7 +35,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
+        public Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -48,7 +48,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.AccessFailedCount);
         }
 
-        public Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
+        public Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -61,7 +61,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
+        public Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -73,7 +73,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.AccessFailedCount);
         }
 
-        public Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken)
+        public Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -85,7 +85,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.LockoutEnabled);
         }
 
-        public Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
+        public Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 

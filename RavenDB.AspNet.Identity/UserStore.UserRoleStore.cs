@@ -9,7 +9,7 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser> : IUserRoleStore<TUser>
     {
-        public Task AddToRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+        public Task AddToRoleAsync(TUser user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -26,7 +26,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task RemoveFromRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+        public Task RemoveFromRoleAsync(TUser user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -39,7 +39,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken)
+        public Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -51,7 +51,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult<IList<string>>(user.Roles);
         }
 
-        public Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+        public Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -63,7 +63,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.Roles.Contains(roleName, StringComparer.InvariantCultureIgnoreCase));
         }
 
-        public Task<IList<TUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        public Task<IList<TUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,7 @@ namespace RavenDB.AspNet.Identity
 {
     public partial class UserStore<TUser> : IUserEmailStore<TUser>
     {
-        public Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
+        public Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -21,7 +21,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<string> GetEmailAsync(TUser user, CancellationToken cancellationToken)
+        public Task<string> GetEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -33,7 +33,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.Email);
         }
 
-        Task<bool> IUserEmailStore<TUser>.GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken)
+        Task<bool> IUserEmailStore<TUser>.GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -45,7 +45,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.IsEmailConfirmed);
         }
 
-        Task IUserEmailStore<TUser>.SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
+        Task IUserEmailStore<TUser>.SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -58,7 +58,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public async Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -68,17 +68,17 @@ namespace RavenDB.AspNet.Identity
             }
 
             var result = await _session.Query<TUser>().FirstOrDefaultAsync(u => u.Email == normalizedEmail, 
-                cancellationToken);
+                cancellationToken = default(CancellationToken));
 
             return result;
         }
 
-        Task<string> IUserEmailStore<TUser>.GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
+        Task<string> IUserEmailStore<TUser>.GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
-        Task IUserEmailStore<TUser>.SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken)
+        Task IUserEmailStore<TUser>.SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
