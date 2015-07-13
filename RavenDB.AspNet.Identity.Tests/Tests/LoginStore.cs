@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using RavenDB.AspNet.Identity;
 using Xunit;
 using Xunit.Extensions;
+using Microsoft.Framework.DependencyInjection;
 
 namespace RavenDB.AspNet.Identity.Tests
 {
@@ -23,11 +24,15 @@ namespace RavenDB.AspNet.Identity.Tests
 
             var user = new SimpleAppUser { Id = userId, UserName = username };
 
+            var services = new ServiceCollection()
+                .AddTransient<IUserStore<SimpleAppUser>, UserStore<SimpleAppUser>>()
+                .AddIdentity<SimpleAppUser, >
+
             using (var docStore = NewDocStore())
             {
                 using (var session = docStore.OpenAsyncSession())
                 {
-                    using (var mgr = new UserManager<SimpleAppUser>(new UserStore<SimpleAppUser>(session)))
+                    using (var mgr = new UserManager<SimpleAppUser>(new UserStore<SimpleAppUser>(session), ))
                     {
                         IdentityResult result = await mgr.CreateAsync(user, password);
 
