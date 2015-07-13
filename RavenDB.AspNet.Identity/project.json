@@ -8,7 +8,8 @@
 
     "dependencies": {
         "Microsoft.AspNet.Identity": "3.0.0-beta5",
-        "RavenDB.Client": "3.0.3690"
+        "RavenDB.Client": "3.0.3690",
+"Microsoft.Framework.DependencyInjection": "1.0.0-beta5"
     },
 
     "frameworks": {
