@@ -135,9 +135,9 @@ namespace RavenDB.AspNet.Identity
 
             // This model allows us to lookup a user by name in order to get the id
             var userByName = new IdentityUserByUserName(user.Id, user.UserName);
-            await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken = default(CancellationToken));
+            await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken);
 
-            await SaveChanges(cancellationToken = default(CancellationToken));
+            await SaveChanges(cancellationToken);
             return IdentityResult.Success;
         }
 
@@ -165,7 +165,7 @@ namespace RavenDB.AspNet.Identity
             }
 
             var userByName = await _session.LoadAsync<IdentityUserByUserName>(Util.GetIdentityUserByUserNameId(user.UserName), 
-                cancellationToken = default(CancellationToken));
+                cancellationToken);
 
             if (userByName != null)
             {
@@ -182,7 +182,7 @@ namespace RavenDB.AspNet.Identity
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _session.LoadAsync<TUser>(userId, cancellationToken = default(CancellationToken));
+            var user = await _session.LoadAsync<TUser>(userId, cancellationToken);
             return user;
         }
 
@@ -192,14 +192,14 @@ namespace RavenDB.AspNet.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var userByName = await _session.LoadAsync<IdentityUserByUserName>(
-                Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken = default(CancellationToken));
+                Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken);
 
             if (userByName == null)
             {
                 return default(TUser);
             }
 
-            return await FindByIdAsync(userByName.UserId, cancellationToken = default(CancellationToken));
+            return await FindByIdAsync(userByName.UserId, cancellationToken);
         }
     }
 }

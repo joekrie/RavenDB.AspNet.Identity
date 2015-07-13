@@ -40,6 +40,16 @@ namespace RavenDB.AspNet.Identity
             _session = session;
         }
 
+        public bool AutoSaveChanges { get; set; } = true;
+
+        private async Task SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (AutoSaveChanges)
+            {
+                await _session.SaveChangesAsync(cancellationToken);
+            }            
+        }
+
         public void Dispose()
         {
             _disposed = true;
