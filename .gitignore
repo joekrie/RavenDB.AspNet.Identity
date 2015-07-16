@@ -156,3 +156,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+RavenDB.AspNet.Identity/project.lock.json
+RavenDB.AspNet.Identity.Tests/project.lock.json
