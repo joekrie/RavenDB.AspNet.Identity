@@ -19,6 +19,7 @@ namespace RavenDB.AspNet.Identity
         private bool _disposed;
         private readonly Func<IAsyncDocumentSession> _getSessionFunc;
         private IAsyncDocumentSession _session;
+        private IDocumentStore _documentStore;
 
         private IAsyncDocumentSession Session
         {
@@ -76,9 +77,30 @@ namespace RavenDB.AspNet.Identity
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+        public async virtual Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+
+            var loadedRole = await _session.LoadAsync<TRole>(role.Id, cancellationToken);
+
+            if (loadedRole.SetUpdatedProperties(role))
+            {
+                try
+                {
+                    await _session.SaveChangesAsync(cancellationToken);
+                }
+                catch (Exception)
+                {
+                    return IdentityResult.Failed();
+                }
+            }
+            return IdentityResult.Success;
         }
 
         public Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
