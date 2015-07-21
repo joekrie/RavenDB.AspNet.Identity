@@ -9,45 +9,28 @@ using Raven.Client;
 
 namespace RavenDB.AspNet.Identity
 {
-    public partial class UserStore<TUser> 
-        where TUser : IdentityUser
+    public partial class UserStore<TUser> : IQueryableUserStore<TUser> where TUser : IdentityUser
     {
         private bool _disposed;
-        private readonly Func<IAsyncDocumentSession> _getSessionFunc;
-        private IAsyncDocumentSession _session;
-
-        private IAsyncDocumentSession Session
+            
+        private readonly IdentityErrorDescriber _errorDescriber;  // allows for custom error messages if injected
+        private readonly IDocumentStore _documentStore;
+        
+        public UserStore(IDocumentStore documentStore, IdentityErrorDescriber errorDescriber = null)
         {
-            get
-            {
-                if (_session == null)
-                {
-                    _session = _getSessionFunc();
-                    _session.Advanced.DocumentStore.Conventions
-                        .RegisterIdConvention<IdentityUser>((dbname, commands, user) => "IdentityUsers/" + user.Id);
-                }
-                return _session;
-            }
-        }
-
-        public UserStore(Func<IAsyncDocumentSession> getSession)
-        {
-            _getSessionFunc = getSession;
-        }
-
-        public UserStore(IAsyncDocumentSession session)
-        {
-            _session = session;
+            _errorDescriber = errorDescriber ?? new IdentityErrorDescriber();
+            _documentStore = documentStore;
         }
 
         public bool AutoSaveChanges { get; set; } = true;
 
         private async Task SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (AutoSaveChanges)
+            using (var session = _documentStore.OpenAsyncSession())
             {
-                await _session.SaveChangesAsync(cancellationToken);
-            }            
+                session.Delete<IdentityUser>("users/2");
+                await session.SaveChangesAsync(cancellationToken);
+            }      
         }
 
         public void Dispose()
@@ -61,6 +44,11 @@ namespace RavenDB.AspNet.Identity
             {
                 throw new ObjectDisposedException(GetType().Name);
             }
+        }
+
+        public IQueryable<TUser> Users =>
+        {
+            using (var session = _documentStore.)
         }
     }
 }

@@ -26,16 +26,9 @@ namespace RavenDB.AspNet.Identity
 
         public IdentityUser()
         {
-            this.Claims = new List<IdentityUserClaim>();
-            this.Roles = new List<string>();
-            this.Logins = new List<UserLoginInfo>();
-        }
-
-        public IdentityUser(string userId, string userName)
-            : this()
-        {
-            this.Id = userId;
-            this.UserName = userName;
+            Claims = new List<IdentityUserClaim>();
+            Roles = new List<string>();
+            Logins = new List<UserLoginInfo>();
         }
     }
 }

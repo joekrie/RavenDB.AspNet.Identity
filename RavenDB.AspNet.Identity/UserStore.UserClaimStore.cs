@@ -5,10 +5,11 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using Raven.Abstractions.Exceptions;
 
 namespace RavenDB.AspNet.Identity
 {
-    public partial class UserStore<TUser>: IUserClaimStore<TUser>
+    public partial class UserStore<TUser>: IUserClaimStore<TUser> //, IUserStore<TUser>
     {
         public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -131,17 +132,25 @@ namespace RavenDB.AspNet.Identity
                 throw new InvalidOperationException("user.Id property must be specified before calling CreateAsync");
             }
 
-            await _session.StoreAsync(user, cancellationToken = default(CancellationToken));
+            await _session.StoreAsync(user, cancellationToken);
 
             // This model allows us to lookup a user by name in order to get the id
             var userByName = new IdentityUserByUserName(user.Id, user.UserName);
             await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken);
+            
+            try
+            {
+                await SaveChanges(cancellationToken);
+            }
+            catch (ConcurrencyException)
+            {
+                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+            }
 
-            await SaveChanges(cancellationToken);
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
@@ -151,7 +160,16 @@ namespace RavenDB.AspNet.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return Task.FromResult(IdentityResult.Success);
+            try
+            {
+                await SaveChanges(cancellationToken);
+            }
+            catch (ConcurrencyException)
+            {
+                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+            }
+
+            return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -173,6 +191,15 @@ namespace RavenDB.AspNet.Identity
             }
 
             _session.Delete(user);
+
+            try
+            {
+                await SaveChanges(cancellationToken);
+            }
+            catch (ConcurrencyException)
+            {
+                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+            }
 
             return IdentityResult.Success;
         }
