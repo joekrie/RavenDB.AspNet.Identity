@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using Raven.Client;
+using Raven.Abstractions.Commands;
 
 namespace RavenDB.AspNet.Identity
 {
@@ -19,6 +20,7 @@ namespace RavenDB.AspNet.Identity
         private bool _disposed;
         private readonly Func<IAsyncDocumentSession> _getSessionFunc;
         private IAsyncDocumentSession _session;
+        private IDocumentStore _documentStore;
 
         private IAsyncDocumentSession Session
         {
@@ -76,14 +78,55 @@ namespace RavenDB.AspNet.Identity
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+        public async virtual Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+
+            var loadedRole = await _session.LoadAsync<TRole>(role.Id, cancellationToken);
+
+            if (loadedRole.SetUpdatedProperties(role))
+            {
+                try
+                {
+                    await SaveChanges(cancellationToken);
+                }
+                catch (Exception)
+                {
+                    return IdentityResult.Failed();
+                }
+            }
+            return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+            _session.Advanced.Defer(new DeleteCommandData { Key = role.Id });
+            try
+            {
+                await SaveChanges(cancellationToken);
+            }
+            catch (Exception)
+            {
+                return IdentityResult.Failed();
+            }
+            return IdentityResult.Success;
+        }
+
+        private async Task SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await _session.SaveChangesAsync(cancellationToken);
         }
 
         public Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
