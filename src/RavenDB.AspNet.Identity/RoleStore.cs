@@ -12,6 +12,7 @@ namespace RavenDB.AspNet.Identity
     public class IdentityRole
     {
         public string Id { get; set; }
+        public string Name { get; set; }
     }
 
     public class RoleStore<TRole> : IRoleStore<TRole>
@@ -148,7 +149,13 @@ namespace RavenDB.AspNet.Identity
 
         public Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+            return Task.FromResult(role.Name);
         }
 
         public Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default(CancellationToken))
