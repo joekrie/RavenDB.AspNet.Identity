@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using Raven.Client;
@@ -9,12 +7,6 @@ using Raven.Abstractions.Commands;
 
 namespace RavenDB.AspNet.Identity
 {
-    public class IdentityRole
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
-
     public class RoleStore<TRole> : IRoleStore<TRole>
         where TRole : IdentityRole
     {
