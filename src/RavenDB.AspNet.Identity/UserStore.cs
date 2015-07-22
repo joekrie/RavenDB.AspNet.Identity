@@ -24,13 +24,12 @@ namespace RavenDB.AspNet.Identity
 
         public bool AutoSaveChanges { get; set; } = true;
 
-        private async Task SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
+        public IQueryable<TUser> Users
         {
-            using (var session = _documentStore.OpenAsyncSession())
+            get
             {
-                session.Delete<IdentityUser>("users/2");
-                await session.SaveChangesAsync(cancellationToken);
-            }      
+                throw new NotImplementedException();
+            }
         }
 
         public void Dispose()
@@ -45,10 +44,6 @@ namespace RavenDB.AspNet.Identity
                 throw new ObjectDisposedException(GetType().Name);
             }
         }
-
-        public IQueryable<TUser> Users =>
-        {
-            using (var session = _documentStore.)
-        }
+        
     }
 }

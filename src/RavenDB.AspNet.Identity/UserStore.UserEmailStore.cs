@@ -33,7 +33,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.Email);
         }
 
-        Task<bool> IUserEmailStore<TUser>.GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<bool> GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -45,7 +45,7 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(user.IsEmailConfirmed);
         }
 
-        Task IUserEmailStore<TUser>.SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfDisposed();
 
@@ -67,18 +67,19 @@ namespace RavenDB.AspNet.Identity
                 throw new ArgumentNullException(nameof(normalizedEmail));
             }
 
-            var result = await _session.Query<TUser>().FirstOrDefaultAsync(u => u.Email == normalizedEmail, 
-                cancellationToken = default(CancellationToken));
-
-            return result;
+            using (var session = _documentStore.OpenAsyncSession())
+            {
+                var result = await session.Query<TUser>().FirstOrDefaultAsync(u => u.Email == normalizedEmail, cancellationToken);
+                return result;
+            }
         }
 
-        Task<string> IUserEmailStore<TUser>.GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
 
-        Task IUserEmailStore<TUser>.SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

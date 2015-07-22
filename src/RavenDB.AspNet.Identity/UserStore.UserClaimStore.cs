@@ -9,7 +9,7 @@ using Raven.Abstractions.Exceptions;
 
 namespace RavenDB.AspNet.Identity
 {
-    public partial class UserStore<TUser>: IUserClaimStore<TUser> //, IUserStore<TUser>
+    public partial class UserStore<TUser>: IUserClaimStore<TUser>
     {
         public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -132,22 +132,24 @@ namespace RavenDB.AspNet.Identity
                 throw new InvalidOperationException("user.Id property must be specified before calling CreateAsync");
             }
 
-            await _session.StoreAsync(user, cancellationToken);
-
-            // This model allows us to lookup a user by name in order to get the id
-            var userByName = new IdentityUserByUserName(user.Id, user.UserName);
-            await _session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken);
-            
-            try
+            using (var session = _documentStore.OpenAsyncSession())
             {
-                await SaveChanges(cancellationToken);
-            }
-            catch (ConcurrencyException)
-            {
-                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
-            }
+                await session.StoreAsync(user, cancellationToken);
 
-            return IdentityResult.Success;
+                // This model allows us to lookup a user by name in order to get the id
+                var userByName = new IdentityUserByUserName(user.Id, user.UserName);
+                await session.StoreAsync(userByName, Util.GetIdentityUserByUserNameId(user.UserName), cancellationToken);
+
+                try
+                {
+                    await session.SaveChangesAsync(cancellationToken);
+                    return IdentityResult.Success;
+                }
+                catch (ConcurrencyException)
+                {
+                    return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+                }
+            }
         }
 
         public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -160,16 +162,18 @@ namespace RavenDB.AspNet.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            try
+            using (var session = _documentStore.OpenAsyncSession())
             {
-                await SaveChanges(cancellationToken);
+                try
+                {
+                    await session.SaveChangesAsync(cancellationToken);
+                    return IdentityResult.Success;
+                }
+                catch (ConcurrencyException)
+                {
+                    return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+                }
             }
-            catch (ConcurrencyException)
-            {
-                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
-            }
-
-            return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -182,26 +186,28 @@ namespace RavenDB.AspNet.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var userByName = await _session.LoadAsync<IdentityUserByUserName>(Util.GetIdentityUserByUserNameId(user.UserName), 
-                cancellationToken);
-
-            if (userByName != null)
+            using (var session = _documentStore.OpenAsyncSession())
             {
-                _session.Delete(userByName);
-            }
+                var userByName = await session.LoadAsync<IdentityUserByUserName>(Util.GetIdentityUserByUserNameId(user.UserName),
+                    cancellationToken);
 
-            _session.Delete(user);
+                if (userByName != null)
+                {
+                    session.Delete(userByName);
+                }
 
-            try
-            {
-                await SaveChanges(cancellationToken);
-            }
-            catch (ConcurrencyException)
-            {
-                return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
-            }
+                session.Delete(user);
 
-            return IdentityResult.Success;
+                try
+                {
+                    await session.SaveChangesAsync(cancellationToken);
+                    return IdentityResult.Success;
+                }
+                catch (ConcurrencyException)
+                {
+                    return IdentityResult.Failed(_errorDescriber.ConcurrencyFailure());
+                }
+            }
         }
 
         public async Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default(CancellationToken))
@@ -209,8 +215,10 @@ namespace RavenDB.AspNet.Identity
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _session.LoadAsync<TUser>(userId, cancellationToken);
-            return user;
+            using (var session = _documentStore.OpenAsyncSession())
+            {
+                return await session.LoadAsync<TUser>(userId, cancellationToken);
+            }
         }
 
         public async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default(CancellationToken))
@@ -218,15 +226,18 @@ namespace RavenDB.AspNet.Identity
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            var userByName = await _session.LoadAsync<IdentityUserByUserName>(
-                Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken);
-
-            if (userByName == null)
+            using (var session = _documentStore.OpenAsyncSession())
             {
-                return default(TUser);
-            }
+                var userByName = await session.LoadAsync<IdentityUserByUserName>(
+                    Util.GetIdentityUserByUserNameId(normalizedUserName), cancellationToken);
 
-            return await FindByIdAsync(userByName.UserId, cancellationToken);
+                if (userByName == null)
+                {
+                    return default(TUser);
+                }
+
+                return await FindByIdAsync(userByName.UserId, cancellationToken);
+            }
         }
     }
 }
