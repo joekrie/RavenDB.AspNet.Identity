@@ -131,6 +131,18 @@ namespace RavenDB.AspNet.Identity
 
         public Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+
+            return Task.FromResult(ConvertIdToString(role.Id));
+        }
+
+        private string ConvertIdToString(string id)
+        {
             throw new NotImplementedException();
         }
 
