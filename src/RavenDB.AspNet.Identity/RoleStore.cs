@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Raven.Client;
 using Raven.Abstractions.Commands;
+using System.ComponentModel;
 
 namespace RavenDB.AspNet.Identity
 {
@@ -55,19 +56,14 @@ namespace RavenDB.AspNet.Identity
 
         public async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
-
             if (role == null)
             {
-                throw new ArgumentNullException(nameof(role));
+                throw new ArgumentNullException("role");
             }
-
-            if (string.IsNullOrEmpty(role.Id))
-            {
-                throw new InvalidOperationException("role.Id property must be specified before calling CreateAsync");
-            }
-
             await _session.StoreAsync(role, cancellationToken);
+            await SaveChanges(cancellationToken);
             return IdentityResult.Success;
         }
 
@@ -134,9 +130,22 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(ConvertIdToString(role.Id));
         }
 
-        private string ConvertIdToString(string id)
+        public virtual string ConvertIdFromString(string id)
         {
-            throw new NotImplementedException();
+            if (id == null)
+            {
+                return default(string);
+            }
+            return (string)TypeDescriptor.GetConverter(typeof(string)).ConvertFromInvariantString(id);
+        }
+
+        public virtual string ConvertIdToString(string id)
+        {
+            if (id.Equals(default(string)))
+            {
+                return null;
+            }
+            return id.ToString();
         }
 
         public Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
@@ -185,9 +194,18 @@ namespace RavenDB.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public Task<TRole> FindByIdAsync(string roleId, CancellationToken cancellationToken = default(CancellationToken))
+        /// <summary>
+        ///     Find a role by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public virtual Task<TRole> FindByIdAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            var roleId = ConvertIdFromString(id);
+            return _session.LoadAsync<TRole>(id, cancellationToken);
         }
 
         public Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken = default(CancellationToken))
