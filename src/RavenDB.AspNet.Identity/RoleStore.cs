@@ -62,7 +62,7 @@ namespace RavenDB.AspNet.Identity
             {
                 throw new ArgumentNullException("role");
             }
-            await _session.StoreAsync(role, cancellationToken);
+            await Session.StoreAsync(role, cancellationToken);
             await SaveChanges(cancellationToken);
             return IdentityResult.Success;
         }
@@ -77,7 +77,7 @@ namespace RavenDB.AspNet.Identity
                 throw new ArgumentNullException("role");
             }
 
-            var loadedRole = await _session.LoadAsync<TRole>(role.Id, cancellationToken);
+            var loadedRole = await Session.LoadAsync<TRole>(role.Id, cancellationToken);
 
             if (loadedRole.SetUpdatedProperties(role))
             {
@@ -101,7 +101,7 @@ namespace RavenDB.AspNet.Identity
             {
                 throw new ArgumentNullException("role");
             }
-            _session.Advanced.Defer(new DeleteCommandData { Key = role.Id });
+            Session.Advanced.Defer(new DeleteCommandData { Key = role.Id });
             try
             {
                 await SaveChanges(cancellationToken);
@@ -115,7 +115,7 @@ namespace RavenDB.AspNet.Identity
 
         private async Task SaveChanges(CancellationToken cancellationToken = default(CancellationToken))
         {
-            await _session.SaveChangesAsync(cancellationToken);
+            await Session.SaveChangesAsync(cancellationToken);
         }
 
         public Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
@@ -205,7 +205,7 @@ namespace RavenDB.AspNet.Identity
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             var roleId = ConvertIdFromString(id);
-            return _session.LoadAsync<TRole>(id, cancellationToken);
+            return Session.LoadAsync<TRole>(id, cancellationToken);
         }
 
         public Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken = default(CancellationToken))
