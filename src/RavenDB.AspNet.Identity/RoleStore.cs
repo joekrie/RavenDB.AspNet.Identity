@@ -152,7 +152,14 @@ namespace RavenDB.AspNet.Identity
 
         public Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            if (role == null)
+            {
+                throw new ArgumentNullException("role");
+            }
+            role.Name = roleName;
+            return Task.FromResult(0);
         }
 
         public Task<string> GetNormalizedRoleNameAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
